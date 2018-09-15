@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.IOException;
@@ -19,10 +20,10 @@ public class BluetoothChatService {
     //Debugging
     private static final String TAG = "BluetoothChatService";
 
-    private static final String appName = "MYAPP";
+    private static final String appName = "Bluetooth Demo";
 
     //Unique UUID for this application
-    private static final UUID MY_UUID_INSECURE = UUID.fromString("6b347736-d264-4a94-a526-a95116972c54");
+    private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
     private final BluetoothAdapter mBluetoothAdapter;
     Context mContext;
@@ -36,8 +37,8 @@ public class BluetoothChatService {
 
     private ConnectedThread mConnectedThread;
 
-    public BluetoothChatService(Context mContext) {
-        this.mContext = mContext;
+    public BluetoothChatService(Context context) {
+        mContext = context;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         start();
     }
@@ -60,7 +61,7 @@ public class BluetoothChatService {
                 Log.d(TAG, "AcceptThread: Setting up Server using: " + MY_UUID_INSECURE);
             }
             catch (IOException e){
-
+                Log.e(TAG, "AcceptThread: IOException: " + e.getMessage());
             }
             mmServerSocket = tmp;
         }
@@ -151,7 +152,6 @@ public class BluetoothChatService {
                 Log.d(TAG, "run: ConnectThread: Could not connect to UUID: " + MY_UUID_INSECURE);
             }
 
-            //will talk about it later
             connected(mmSocket, mmDevice);
         }
 
@@ -233,7 +233,7 @@ public class BluetoothChatService {
 
             //keep listening to the InputStream until an exception occurs
             while (true){
-                //Read from InputStream
+                //Read from the InputStream
                 try{
                     bytes = mmInStream.read(buffer);
                     String incomingMessage = new String(buffer, 0, bytes);
@@ -241,6 +241,8 @@ public class BluetoothChatService {
 
                     Intent incomingMessageIntent = new Intent("incomingMessage");
                     incomingMessageIntent.putExtra("theMessage", incomingMessage);
+                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(incomingMessageIntent);
+
 
                 }
                 catch (IOException e){

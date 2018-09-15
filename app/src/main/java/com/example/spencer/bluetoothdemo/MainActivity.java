@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     EditText etSend;
 
-    private static final UUID MY_UUID_INSECURE = UUID.fromString("6b347736-d264-4a94-a526-a95116972c54");
+    private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
     BluetoothDevice mBTDevice;
 
